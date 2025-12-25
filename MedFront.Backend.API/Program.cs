@@ -3,12 +3,12 @@ using MedFront.Backend.Application.Interfaces;
 using MedFront.Backend.Infrastructure.Integration.Authentication;
 using MedFront.Backend.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 using System.Security.Claims;
 using System.Text;
-
-using QuestPDF.Infrastructure;
 
 namespace MedFront.Backend.API
 {
@@ -24,6 +24,13 @@ namespace MedFront.Backend.API
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddApplication();
+            builder.Services.AddPersistence(builder.Configuration);
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<IUserContextService, UserContextService>();
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -54,14 +61,6 @@ namespace MedFront.Backend.API
                     }
                 });
             });
-
-            builder.Services.AddPersistence(builder.Configuration);
-
-            builder.Services.AddHttpContextAccessor();
-
-            builder.Services.AddScoped<IJwtService, JwtService>();
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-            builder.Services.AddScoped<IUserContextService, UserContextService>();
 
             builder.Services
                 .AddAuthentication(options =>
@@ -106,13 +105,23 @@ namespace MedFront.Backend.API
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MedFront API v1");
+                c.RoutePrefix = "swagger";
+            });
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<MedFrontDbContext>();
+                db.Database.Migrate();
             }
 
-            app.UseHttpsRedirection();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
