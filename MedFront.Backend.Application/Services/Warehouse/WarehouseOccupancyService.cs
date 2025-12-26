@@ -18,13 +18,17 @@ namespace MedFront.Backend.Application.Services.Warehouse
             var occupancy = await _context.MedicationStocks
                 .AsNoTracking()
                 .Where(ms => ms.WarehouseId == warehouseId)
-                .Include(ms => ms.Medication)
-                .Select(ms => (decimal)ms.BoxQuantity * ms.Medication.PackageVolume)
-                .DefaultIfEmpty(0m)
+                .Join(
+                    _context.Medications.AsNoTracking(),
+                    ms => ms.MedicationId,
+                    m => m.Id,
+                    (ms, m) => (decimal?)ms.BoxQuantity * m.PackageVolume
+                )
                 .SumAsync(ct);
 
-            return occupancy;
+            return occupancy ?? 0m;
         }
+
 
 
 
