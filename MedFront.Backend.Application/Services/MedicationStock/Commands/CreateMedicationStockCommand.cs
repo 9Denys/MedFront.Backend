@@ -67,7 +67,7 @@ namespace MedFront.Backend.Application.Services.MedicationStock.Commands
 
             _context.MedicationStocks.Add(entity);
 
-            await _alertService.CheckAndCreateAlertsAsync(entity, cancellationToken);
+            //await _alertService.CheckAndCreateAlertsAsync(entity, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 
