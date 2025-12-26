@@ -11,7 +11,7 @@ namespace MedFront.Backend.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize] 
     public class SensorReadingsController : BaseController
     {
         private readonly IMediator _mediator;
@@ -21,10 +21,18 @@ namespace MedFront.Backend.API.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] SensorReadingCreateDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<Guid>> Create(
+            [FromBody] SensorReadingCreateDto dto,
+            CancellationToken cancellationToken)
         {
+            if (dto.SensorId == Guid.Empty)
+                return BadRequest("SensorId is required.");
+
+            if (dto.Value < -100 || dto.Value > 150)
+                return BadRequest("Temperature value is out of reasonable range.");
+
             var id = await _mediator.Send(new CreateSensorReadingCommand(dto), cancellationToken);
             return Ok(id);
         }
