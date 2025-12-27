@@ -21,7 +21,7 @@ namespace MedFront.Backend.API.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<MedicationDto>>> GetAll(CancellationToken cancellationToken)
         {
