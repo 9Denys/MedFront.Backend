@@ -16,19 +16,17 @@ namespace MedFront.Backend.Infrastructure.Persistence.Configurations
 
             builder.Property(r => r.RequestStatus)
                 .IsRequired()
-                .HasConversion<int>(); // enum -> int
+                .HasConversion<int>(); 
 
             builder.Property(r => r.Description)
-                .HasMaxLength(1000); // можешь убрать лимит, если не хочешь
+                .HasMaxLength(1000); 
 
             builder.HasIndex(r => r.UserId);
             builder.HasIndex(r => r.WarehouseId);
             builder.HasIndex(r => r.MedicationId);
 
-            // удобно для админки: быстро "последние заявки по складу"
             builder.HasIndex(r => new { r.WarehouseId, r.CreatedAt });
 
-            // удобно для поиска по медикаменту + дата
             builder.HasIndex(r => new { r.MedicationId, r.CreatedAt });
 
             builder.HasOne(r => r.User)

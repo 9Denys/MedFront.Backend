@@ -43,7 +43,7 @@ namespace MedFront.Backend.API
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Введите JWT токен в формате: Bearer {token}"
+                    Description = "Provide the JWT token in the format: Bearer {token}"
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement

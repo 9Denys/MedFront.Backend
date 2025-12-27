@@ -1,7 +1,7 @@
-﻿using MedFront.Backend.API.Common;
-using MedFront.Backend.Application.Services.Sensor.Commands;
+﻿using MedFront.Backend.Application.Services.Sensor.Commands;
 using MedFront.Backend.Application.Services.Sensor.Queries;
 using MedFront.Backend.Contracts.DTOs.CreateDTOs;
+using MedFront.Backend.Contracts.DTOs.Enums;
 using MedFront.Backend.Contracts.DTOs.ReadingDTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +11,7 @@ namespace MedFront.Backend.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] 
-    public class SensorReadingsController : BaseController
+    public class SensorReadingsController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -27,12 +26,6 @@ namespace MedFront.Backend.API.Controllers
             [FromBody] SensorReadingCreateDto dto,
             CancellationToken cancellationToken)
         {
-            if (dto.SensorId == Guid.Empty)
-                return BadRequest("SensorId is required.");
-
-            if (dto.Value < -100 || dto.Value > 150)
-                return BadRequest("Temperature value is out of reasonable range.");
-
             var id = await _mediator.Send(new CreateSensorReadingCommand(dto), cancellationToken);
             return Ok(id);
         }

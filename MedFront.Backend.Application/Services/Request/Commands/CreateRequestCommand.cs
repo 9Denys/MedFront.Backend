@@ -46,10 +46,8 @@ namespace MedFront.Backend.Application.Services.Request.Commands
             if (userId is null)
                 throw new UnauthorizedAccessException("UserId is not found in token.");
 
-            // доступ к складу
             await _access.EnsureAccessAsync(request.Dto.WarehouseId, ct);
 
-            // (не обязательно, но полезно) проверим что склад и медикамент существуют
             var warehouseExists = await _context.Warehouses
                 .AsNoTracking()
                 .AnyAsync(w => w.Id == request.Dto.WarehouseId, ct);
