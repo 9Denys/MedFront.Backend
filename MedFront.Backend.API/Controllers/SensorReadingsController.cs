@@ -30,7 +30,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(id);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("{sensorId:guid}")]
         public async Task<ActionResult<List<SensorReadingDto>>> GetBySensor(
             Guid sensorId,
