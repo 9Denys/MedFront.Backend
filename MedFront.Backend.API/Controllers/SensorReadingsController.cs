@@ -11,6 +11,7 @@ namespace MedFront.Backend.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SensorReadingsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -30,7 +31,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(id);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet("{sensorId:guid}")]
         public async Task<ActionResult<List<SensorReadingDto>>> GetBySensor(
             Guid sensorId,

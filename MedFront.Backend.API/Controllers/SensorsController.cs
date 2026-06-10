@@ -38,7 +38,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet("warehouse/{warehouseId:guid}")]
         public async Task<ActionResult<List<SensorDto>>> GetByWarehouse(Guid warehouseId, CancellationToken cancellationToken)
         {
