@@ -12,6 +12,7 @@ namespace MedFront.Backend.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MedicationsController : BaseController
     {
         private readonly IMediator _mediator;
@@ -21,7 +22,7 @@ namespace MedFront.Backend.API.Controllers
             _mediator = mediator;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet]
         public async Task<ActionResult<List<MedicationDto>>> GetAll(CancellationToken cancellationToken)
         {
@@ -29,7 +30,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<MedicationDto>> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -37,7 +38,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] MedicationCreateDto dto, CancellationToken cancellationToken)
         {
@@ -45,7 +46,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(id);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] MedicationUpdateDto dto, CancellationToken cancellationToken)
         {
@@ -53,7 +54,7 @@ namespace MedFront.Backend.API.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Medic")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {

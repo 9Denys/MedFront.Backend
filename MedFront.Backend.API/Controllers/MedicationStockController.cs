@@ -23,6 +23,7 @@ namespace MedFront.Backend.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet("by-warehouse/{warehouseId:guid}")]
         public async Task<ActionResult<List<MedicationStockDto>>> GetByWarehouse(Guid warehouseId, CancellationToken ct)
         {
@@ -30,6 +31,7 @@ namespace MedFront.Backend.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpGet("{stockId:guid}")]
         public async Task<ActionResult<MedicationStockDto>> GetById(Guid stockId, CancellationToken ct)
         {
@@ -37,22 +39,23 @@ namespace MedFront.Backend.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Guid>> Create([FromBody] CreateMedicationStockDto dto, CancellationToken ct)
         {
             var id = await _mediator.Send(new CreateMedicationStockCommand(dto), ct);
             return Ok(id);
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpPut("{stockId:guid}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid stockId, [FromBody] UpdateMedicationStockDto dto, CancellationToken ct)
         {
             await _mediator.Send(new UpdateMedicationStockCommand(stockId, dto), ct);
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpPost("{stockId:guid}/write-off")]
         public async Task<IActionResult> WriteOff(Guid stockId, [FromBody] MedicationStockWriteOffDto dto, CancellationToken ct)
         {
@@ -60,8 +63,8 @@ namespace MedFront.Backend.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Medic")]
         [HttpDelete("{stockId:guid}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid stockId, CancellationToken ct)
         {
             await _mediator.Send(new DeleteMedicationStockCommand(stockId), ct);
