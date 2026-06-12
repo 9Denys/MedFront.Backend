@@ -29,3 +29,15 @@ secrets.json
 *.log
 *.tmp
 *.temp
+
+## Python (Locust)
+__pycache__/
+*.pyc
+*.pyo
+
+## Docker
+docker-compose.override.yml
+
+## Operating System Files
+Thumbs.db
+.DS_Store
